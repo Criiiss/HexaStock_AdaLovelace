@@ -38,7 +38,7 @@ public class PortfolioMapper {
      * @return The corresponding Portfolio domain object
      */
     public static Portfolio toModelEntity(PortfolioJpaEntity jpaEntity) {
-        Portfolio portfolio = new Portfolio(jpaEntity.getId(), jpaEntity.getOwnerName(), jpaEntity.getBalance(), jpaEntity.getCreatedAt());
+        Portfolio portfolio = new Portfolio(jpaEntity.getId(), jpaEntity.getOwnerName(), jpaEntity.getBalance(), jpaEntity.getCreatedAt(), jpaEntity.getPolicy());
 
         for(var holdingJpaEntity: jpaEntity.getHoldings())
             portfolio.addHolding(HoldingMapper.toModelEntity(holdingJpaEntity));
@@ -60,7 +60,7 @@ public class PortfolioMapper {
      * @return The corresponding JPA entity
      */
     public static PortfolioJpaEntity toJpaEntity(Portfolio entity) {
-        PortfolioJpaEntity portfolioJpaEntity = new PortfolioJpaEntity(entity.getId(), entity.getOwnerName(), entity.getBalance(), entity.getCreatedAt());
+        PortfolioJpaEntity portfolioJpaEntity = new PortfolioJpaEntity(entity.getId(), entity.getOwnerName(), entity.getBalance(), entity.getCreatedAt(), entity.getPolicy());
 
         portfolioJpaEntity.setHoldings(entity.getHoldings().stream().map(HoldingMapper::toJpaEntity).collect(Collectors.toSet()));
 

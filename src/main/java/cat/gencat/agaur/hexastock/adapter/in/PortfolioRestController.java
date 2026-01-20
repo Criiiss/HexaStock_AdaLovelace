@@ -78,10 +78,11 @@ public class PortfolioRestController {
      */
     @PostMapping
     public ResponseEntity<Portfolio> createPortfolio(@RequestBody CreatePortfolioDTO request) {
-        Portfolio portfolio = portfolioManagementUseCase.createPortfolio(request.ownerName());
+        Portfolio portfolio = portfolioManagementUseCase.createPortfolio(request.ownerName(), request.policy());
         return new ResponseEntity<>(portfolio, HttpStatus.CREATED);
     }
-    
+
+
     /**
      * Retrieves a portfolio by its ID.
      * 

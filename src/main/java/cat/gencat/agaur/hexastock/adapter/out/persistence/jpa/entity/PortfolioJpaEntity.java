@@ -1,5 +1,6 @@
 package cat.gencat.agaur.hexastock.adapter.out.persistence.jpa.entity;
 
+import cat.gencat.agaur.hexastock.model.LotSelectionPolicy;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -51,6 +52,8 @@ public class PortfolioJpaEntity {
      */
     private LocalDateTime createdAt;
 
+    private LotSelectionPolicy policy;
+
     /**
      * The collection of stock holdings in this portfolio.
      * 
@@ -76,11 +79,12 @@ public class PortfolioJpaEntity {
      * @param balance The initial cash balance
      * @param createdAt The timestamp when the portfolio was created
      */
-    public PortfolioJpaEntity(String id, String ownerName, BigDecimal balance, LocalDateTime createdAt) {
+    public PortfolioJpaEntity(String id, String ownerName, BigDecimal balance, LocalDateTime createdAt, LotSelectionPolicy policy) {
         this.id = id;
         this.ownerName = ownerName;
         this.balance = balance;
         this.createdAt = createdAt;
+        this.policy = policy;
     }
 
     // Getters
@@ -128,6 +132,7 @@ public class PortfolioJpaEntity {
     public Set<HoldingJpaEntity> getHoldings() {
         return holdings;
     }
+    public LotSelectionPolicy getPolicy() { return  policy;}
     
     /**
      * Checks if the portfolio has any holdings.

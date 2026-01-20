@@ -55,6 +55,8 @@ public class Portfolio {
      */
     private LocalDateTime createdAt;
 
+    private LotSelectionPolicy policy;
+
     /**
      * Map of all stock holdings in this portfolio, indexed by ticker symbol.
      * Each Holding represents ownership of a particular stock.
@@ -71,11 +73,12 @@ public class Portfolio {
      * @param balance The initial cash balance
      * @param createdAt The creation timestamp
      */
-    public Portfolio(String id, String ownerName, BigDecimal balance, LocalDateTime createdAt) {
+    public Portfolio(String id, String ownerName, BigDecimal balance, LocalDateTime createdAt, LotSelectionPolicy policy) {
         this.id = id;
         this.ownerName = ownerName;
         this.balance = balance;
         this.createdAt = createdAt;
+        this.policy =  policy;
     }
 
     /**
@@ -84,8 +87,8 @@ public class Portfolio {
      * @param ownerName The name of the portfolio owner
      * @return A new Portfolio instance with zero balance and current timestamp
      */
-    public static Portfolio create(String ownerName) {
-        return new Portfolio(UUID.randomUUID().toString(), ownerName, BigDecimal.ZERO, LocalDateTime.now());
+    public static Portfolio create(String ownerName, LotSelectionPolicy policy) {
+        return new Portfolio(UUID.randomUUID().toString(), ownerName, BigDecimal.ZERO, LocalDateTime.now(), policy);
     }
 
     /**
@@ -192,7 +195,7 @@ public class Portfolio {
 
         Holding holding = holdings.get(ticker);
 
-        SellResult result = holding.sell(quantity, price);
+        SellResult result = holding.sell(quantity, price, policy);
         balance = balance.add(result.proceeds());
         
         return result;
@@ -255,6 +258,8 @@ public class Portfolio {
         return List.copyOf(holdings.values());
     }
 
+    public LotSelectionPolicy getPolicy() {return policy;}
+
     /**
      * Adds a pre-existing Holding to this portfolio.
      * 
@@ -275,4 +280,5 @@ public class Portfolio {
             throw new HoldingNotFoundException("Holding " + key + " not exists");
         return holdings.get(key);
     }
+
 }

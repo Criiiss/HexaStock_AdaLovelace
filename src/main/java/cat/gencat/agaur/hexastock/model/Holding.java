@@ -1,5 +1,8 @@
 package cat.gencat.agaur.hexastock.model;
 
+import cat.gencat.agaur.hexastock.model.Strategy.FIFOSellStrategy;
+import cat.gencat.agaur.hexastock.model.Strategy.HIFOSellStrategy;
+import cat.gencat.agaur.hexastock.model.Strategy.LIFOSellStrategy;
 import cat.gencat.agaur.hexastock.model.Strategy.SellStrategy;
 import cat.gencat.agaur.hexastock.model.exception.ConflictQuantityException;
 import cat.gencat.agaur.hexastock.model.exception.EntityExistsException;
@@ -53,16 +56,6 @@ public class Holding {
      * Lots are processed in FIFO order (oldest first) during sell operations.
      */
     private final List<Lot> lots = new ArrayList<>();
-
-    private SellStrategy sellStrategy;
-
-    public void setStrategy(SellStrategy sellStrategy) {
-        this.sellStrategy = sellStrategy;
-    }
-
-    public void executeStrategy(List<Lot> lots, int quantityToSell){
-        return sellStrategy.sell(lots, quantityToSell);
-    }
 
     protected Holding() {}
     
@@ -121,34 +114,17 @@ public class Holding {
      * @return A SellResult containing proceeds, cost basis, and profit information
      * @throws ConflictQuantityException if there are not enough shares to sell
      */
-    public SellResult sell(int quantity, BigDecimal sellPrice) {
-        if (getTotalShares() < quantity)
-            throw new ConflictQuantityException("Not enough shares to sell. Available: " + getTotalShares() + ", Requested: " + quantity);
-
-        int remainingToSell = quantity;
-        BigDecimal costBasis = BigDecimal.ZERO;
-
-        for (var lot : lots) {
-            if (remainingToSell <= 0) break;
-
-            int sharesSoldFromLot = Math.min(lot.getRemaining(), remainingToSell);
-            BigDecimal lotCostBasis = lot.getUnitPrice().multiply(BigDecimal.valueOf(sharesSoldFromLot));
-            
-            costBasis = costBasis.add(lotCostBasis);
-            lot.reduce(sharesSoldFromLot);
-            remainingToSell -= sharesSoldFromLot;
+    public SellResult sell(int quantity, BigDecimal sellPrice, LotSelectionPolicy policy) {
+        if (getTotalShares() < quantity) {
+            throw new ConflictQuantityException(
+                    "Not enough shares to sell. Available: "
+                            + getTotalShares() + ", Requested: " + quantity
+            );
         }
-
-        // Remove lots with zero remaining after selling
-        lots.removeIf(Lot::isEmpty);
-
-        BigDecimal proceeds = sellPrice.multiply(BigDecimal.valueOf(quantity));
-        BigDecimal profit = proceeds.subtract(costBasis);
-        
-        return new SellResult(proceeds, costBasis, profit);
+        SellStrategy strategy = LotSelectionPolicyFactory.fromPolicy(policy);
+        return strategy.sell(this.lots, quantity, sellPrice);
     }
 
-    
     /**
      * Calculates the total number of shares currently owned in this holding.
      * 
@@ -252,4 +228,22 @@ public class Holding {
 
         return getTheoreticSalePrice(currentPrice).subtract(getRemainingSharesPurchasePrice());
     }
+
+    public final class LotSelectionPolicyFactory {
+
+        private LotSelectionPolicyFactory() {}
+
+        public static SellStrategy fromPolicy(LotSelectionPolicy policy) {
+            if (policy == null) {
+                return new FIFOSellStrategy();
+            }
+            return switch (policy) {
+                case FIFO -> new FIFOSellStrategy();
+                case LIFO -> new LIFOSellStrategy();
+                case HIFO -> new HIFOSellStrategy();
+            };
+        }
+    }
+
 }
+

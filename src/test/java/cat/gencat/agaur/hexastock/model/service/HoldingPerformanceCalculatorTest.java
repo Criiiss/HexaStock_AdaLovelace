@@ -53,7 +53,7 @@ class HoldingPerformanceCalculatorTest {
         @DisplayName("Should calculate correct performance for single purchase")
         void shouldCalculateCorrectPerformanceForSinglePurchase() {
             // Given
-            Portfolio portfolio = Portfolio.create("Test Owner");
+            Portfolio portfolio = Portfolio.create("Test Owner", LotSelectionPolicy.FIFO);
             // Deposit enough funds before buying
             portfolio.deposit(Money.of(USD, new BigDecimal("1500.00")));
             
@@ -91,7 +91,7 @@ class HoldingPerformanceCalculatorTest {
         @DisplayName("Should calculate correct performance for multiple transactions (buys and sells)")
         void shouldCalculateCorrectPerformanceForMultipleTransactions() {
             // Given
-            Portfolio portfolio = Portfolio.create("Test Owner");
+            Portfolio portfolio = Portfolio.create("Test Owner", LotSelectionPolicy.FIFO);
             // Deposit enough funds before buying
             portfolio.deposit(Money.of(USD, new BigDecimal("3000.00")));
             
@@ -148,7 +148,7 @@ class HoldingPerformanceCalculatorTest {
         @DisplayName("Should calculate correct performance with multiple lots and cross-lot selling (FIFO)")
         void shouldCalculateCorrectPerformanceWithCrossLotSellingFIFO() {
             // Given
-            Portfolio portfolio = Portfolio.create("Test Owner");
+            Portfolio portfolio = Portfolio.create("Test Owner", LotSelectionPolicy.FIFO);
             
             // Deposit sufficient funds for all purchases
             portfolio.deposit(Money.of(USD, new BigDecimal("10000.00")));
@@ -239,7 +239,7 @@ class HoldingPerformanceCalculatorTest {
         @DisplayName("Should return empty list for empty portfolio with no transactions")
         void shouldReturnEmptyListForEmptyPortfolio() {
             // Given
-            Portfolio portfolio = Portfolio.create("Test Owner");
+            Portfolio portfolio = Portfolio.create("Test Owner", LotSelectionPolicy.FIFO);
             List<Transaction> transactions = Collections.emptyList();
             Map<Ticker, StockPrice> tickerPrices = Collections.emptyMap();
             
@@ -254,7 +254,7 @@ class HoldingPerformanceCalculatorTest {
         @DisplayName("Should filter out transactions with null ticker")
         void shouldFilterOutTransactionsWithNullTicker() {
             // Given
-            Portfolio portfolio = Portfolio.create("Test Owner");
+            Portfolio portfolio = Portfolio.create("Test Owner", LotSelectionPolicy.FIFO);
             
             // Deposit enough funds before buying
             portfolio.deposit(Money.of(USD, new BigDecimal("1000.00")));
@@ -284,7 +284,7 @@ class HoldingPerformanceCalculatorTest {
         @DisplayName("Should handle holding not present in portfolio but with transactions")
         void shouldHandleHoldingNotPresentInPortfolio() {
             // Given
-            Portfolio portfolio = Portfolio.create("Test Owner");
+            Portfolio portfolio = Portfolio.create("Test Owner", LotSelectionPolicy.FIFO);
             
             // We do not add the holding to the portfolio but we do create transactions
             Transaction purchase = Transaction.createPurchase(

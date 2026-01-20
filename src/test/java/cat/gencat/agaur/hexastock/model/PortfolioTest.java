@@ -33,7 +33,8 @@ class PortfolioTest {
                 UUID.randomUUID().toString(),
                 "John Doe",
                 INITIAL_BALANCE,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                LotSelectionPolicy.FIFO
         );
     }
 
@@ -45,7 +46,7 @@ class PortfolioTest {
         @DisplayName("Should create a portfolio with a factory method")
         void shouldCreatePortfolioWithFactoryMethod() {
             // When
-            Portfolio newPortfolio = Portfolio.create("Jane Doe");
+            Portfolio newPortfolio = Portfolio.create("Jane Doe", LotSelectionPolicy.FIFO);
             
             // Then
             assertNotNull(newPortfolio.getId());

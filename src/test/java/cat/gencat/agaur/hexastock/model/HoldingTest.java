@@ -118,7 +118,7 @@ class HoldingTest {
             holding.buy(5, PRICE_120);
             
             // When
-            SellResult result = holding.sell(8, PRICE_110);
+            SellResult result = holding.sell(8, PRICE_110, LotSelectionPolicy.FIFO);
             
             // Then
             assertEquals(7, holding.getTotalShares());
@@ -143,7 +143,7 @@ class HoldingTest {
             holding.buy(5, PRICE_120);   // Lot 2: 5 shares @ $120
             
             // When selling 12 shares, should take 10 from first lot and 2 from second lot
-            SellResult result = holding.sell(12, PRICE_110);
+            SellResult result = holding.sell(12, PRICE_110, LotSelectionPolicy.FIFO);
             
             // Then
             assertEquals(3, holding.getTotalShares());
@@ -170,7 +170,7 @@ class HoldingTest {
             holding.buy(10, PRICE_100);
             
             // Then
-            assertThrows(ConflictQuantityException.class, () -> holding.sell(15, PRICE_110));
+            assertThrows(ConflictQuantityException.class, () -> holding.sell(15, PRICE_110, LotSelectionPolicy.FIFO));
         }
         
         @Test
@@ -180,7 +180,7 @@ class HoldingTest {
             holding.buy(10, PRICE_100);
             
             // When - Selling at a price lower than purchase price
-            SellResult result = holding.sell(5, PRICE_90);
+            SellResult result = holding.sell(5, PRICE_90, LotSelectionPolicy.FIFO);
             
             // Then
             assertEquals(5, holding.getTotalShares());
@@ -208,7 +208,7 @@ class HoldingTest {
             // Act: Sell all shares from first 3 lots (10+15+20=45), and 5 shares from 4th lot
             int sharesToSell = 10 + 15 + 20 + 5; // 50 shares
             BigDecimal sellPrice = new BigDecimal("130.00");
-            SellResult result = holding.sell(sharesToSell, sellPrice);
+            SellResult result = holding.sell(sharesToSell, sellPrice, LotSelectionPolicy.FIFO);
 
             BigDecimal expectedProfit = new BigDecimal("1150.00");
 
@@ -340,7 +340,7 @@ class HoldingTest {
 
             // When - Modify state of holding1
             holding1.buy(10, PRICE_100);
-            holding1.sell(5, PRICE_110);
+            holding1.sell(5, PRICE_110, LotSelectionPolicy.FIFO);
 
             // Then - Still equal because ID hasn't changed
             assertEquals(holding1, holding2);

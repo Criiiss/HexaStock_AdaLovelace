@@ -1,5 +1,7 @@
 package cat.gencat.agaur.hexastock.adapter.in.webmodel;
 
+import cat.gencat.agaur.hexastock.model.LotSelectionPolicy;
+
 /**
  * CreatePortfolioDTO is a Data Transfer Object for portfolio creation requests in the REST API.
  * 
@@ -27,5 +29,5 @@ package cat.gencat.agaur.hexastock.adapter.in.webmodel;
  * <p>As a record, this class is immutable and provides built-in value semantics,
  * making it ideal for request DTOs that should not be modified after creation.</p>
  */
-public record CreatePortfolioDTO(String ownerName) {
+public record CreatePortfolioDTO(String ownerName, LotSelectionPolicy policy) {
 }

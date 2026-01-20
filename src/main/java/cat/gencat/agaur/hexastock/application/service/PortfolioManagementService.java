@@ -1,6 +1,7 @@
 package cat.gencat.agaur.hexastock.application.service;
 
 import cat.gencat.agaur.hexastock.application.port.in.PortfolioManagementUseCase;
+import cat.gencat.agaur.hexastock.model.LotSelectionPolicy;
 import cat.gencat.agaur.hexastock.model.exception.InvalidAmountException;
 import cat.gencat.agaur.hexastock.model.exception.PortfolioNotFoundException;
 import cat.gencat.agaur.hexastock.application.port.out.PortfolioPort;
@@ -72,8 +73,8 @@ public class PortfolioManagementService implements PortfolioManagementUseCase {
      * @return The newly created Portfolio
      */
     @Override
-    public Portfolio createPortfolio(String ownerName) {
-        Portfolio portfolio = Portfolio.create(ownerName);
+    public Portfolio createPortfolio(String ownerName, LotSelectionPolicy policy) {
+        Portfolio portfolio = Portfolio.create(ownerName,policy);
         portfolioPort.createPortfolio(portfolio);
         return portfolio;
     }

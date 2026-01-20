@@ -1,5 +1,6 @@
 package cat.gencat.agaur.hexastock.application.port.in;
 
+import cat.gencat.agaur.hexastock.model.LotSelectionPolicy;
 import cat.gencat.agaur.hexastock.model.Money;
 import cat.gencat.agaur.hexastock.model.Portfolio;
 import cat.gencat.agaur.hexastock.model.exception.InvalidAmountException;
@@ -30,7 +31,7 @@ public interface PortfolioManagementUseCase {
      * @param ownerName The name of the portfolio owner
      * @return The newly created Portfolio domain object
      */
-    Portfolio createPortfolio(String ownerName);
+    Portfolio createPortfolio(String ownerName, LotSelectionPolicy policy);
     
     /**
      * Retrieves a portfolio by its unique identifier.
