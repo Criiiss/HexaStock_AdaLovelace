@@ -1,5 +1,6 @@
 package cat.gencat.agaur.hexastock.model;
 
+import cat.gencat.agaur.hexastock.model.Strategy.SellStrategy;
 import cat.gencat.agaur.hexastock.model.exception.ConflictQuantityException;
 import cat.gencat.agaur.hexastock.model.exception.EntityExistsException;
 
@@ -52,6 +53,16 @@ public class Holding {
      * Lots are processed in FIFO order (oldest first) during sell operations.
      */
     private final List<Lot> lots = new ArrayList<>();
+
+    private SellStrategy sellStrategy;
+
+    public void setStrategy(SellStrategy sellStrategy) {
+        this.sellStrategy = sellStrategy;
+    }
+
+    public void executeStrategy(List<Lot> lots, int quantityToSell){
+        return sellStrategy.sell(lots, quantityToSell);
+    }
 
     protected Holding() {}
     
@@ -136,6 +147,7 @@ public class Holding {
         
         return new SellResult(proceeds, costBasis, profit);
     }
+
     
     /**
      * Calculates the total number of shares currently owned in this holding.
