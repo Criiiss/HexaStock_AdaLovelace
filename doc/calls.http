@@ -81,3 +81,44 @@ GET http://localhost:8081/api/portfolios/{{portfolioId}}/transactions
 ###
 GET http://localhost:8081/api/portfolios/{{portfolioId}}/holdings
 
+
+### Create a watchlist
+POST http://localhost:8080/api/watchlists
+Content-Type: application/json
+
+{
+  "ownerName": "John Doe",
+  "name": "Tech Growth"
+}
+
+### Add entry to watchlist (replace {watchlistId} with actual ID)
+POST http://localhost:8080/api/watchlists/{watchlistId}/entries
+Content-Type: application/json
+
+{
+  "ticker": "AAPL",
+  "thresholdPrice": 150.00,
+  "currency": "USD"
+}
+
+### Add another entry
+POST http://localhost:8080/api/watchlists/{watchlistId}/entries
+Content-Type: application/json
+
+{
+  "ticker": "MSFT",
+  "thresholdPrice": 300.00,
+  "currency": "USD"
+}
+
+### Get watchlist by ID
+GET http://localhost:8080/api/watchlists/{watchlistId}
+
+### Get all watchlists for owner
+GET http://localhost:8080/api/watchlists?owner=John Doe
+
+### Remove an entry (replace {entryId} with actual ID)
+DELETE http://localhost:8080/api/watchlists/{watchlistId}/entries/{entryId}
+
+### Delete watchlist
+DELETE http://localhost:8080/api/watchlists/{watchlistId}

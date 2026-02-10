@@ -1,14 +1,8 @@
 package cat.gencat.agaur.hexastock.adapter.in;
 
-import cat.gencat.agaur.hexastock.model.exception.ConflictQuantityException;
-import cat.gencat.agaur.hexastock.model.exception.InvalidAmountException;
-import cat.gencat.agaur.hexastock.model.exception.InvalidQuantityException;
-import cat.gencat.agaur.hexastock.model.exception.PortfolioNotFoundException;
-import cat.gencat.agaur.hexastock.model.exception.HoldingNotFoundException;
-import cat.gencat.agaur.hexastock.model.exception.ExternalApiException;
-import cat.gencat.agaur.hexastock.model.exception.InsufficientFundsException;
-import cat.gencat.agaur.hexastock.model.exception.InvalidTickerException;
+import cat.gencat.agaur.hexastock.model.exception.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -96,6 +90,16 @@ public class ExceptionHandlingAdvice {
         pd.setTitle("Invalid Ticker");
         pd.setDetail(ex.getMessage());
         return pd;
+    }
+
+    //Hugo i Pol
+    @ExceptionHandler(WatchlistNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleWatchlistNotFound(WatchlistNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(
+                404,
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
 }
