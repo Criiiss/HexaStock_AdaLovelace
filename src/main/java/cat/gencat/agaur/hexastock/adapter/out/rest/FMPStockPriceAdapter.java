@@ -44,8 +44,7 @@ public class FMPStockPriceAdapter implements StockPriceProviderPort {
         // Throttle to stay within free-tier rate limits (Financial Modeling Prep).
         throttle();
 
-        String url = String.format("%s//quote?symbol=%s&apikey=%s", fmpBaseUrl, ticker.value(), fmpApiKey);
-
+        String url = String.format("%s/stable/quote?symbol=%s&apikey=%s", fmpBaseUrl, ticker.value(), fmpApiKey);
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(5_000); // milliseconds
         factory.setReadTimeout(5_000);    // milliseconds
@@ -63,7 +62,7 @@ public class FMPStockPriceAdapter implements StockPriceProviderPort {
                     .uri(url)
                     .retrieve()
                     .body(JsonNode.class);
-            if (quoteJson == null || quoteJson.isArray() || quoteJson.get(0).get("price") == null || !quoteJson.get(0).get("price").isNumber()) {
+            if (quoteJson == null || !quoteJson.isArray() || quoteJson.get(0).get("price") == null || !quoteJson.get(0).get("price").isNumber()) {
                 throw new ExternalApiException("Invalid response from Financial Modeling Prep API: missing or malformed price data");
             }
         } catch (Exception e) {
